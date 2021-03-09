@@ -30,9 +30,10 @@ const players = {};
 // WebSocket handlers
 io.on('connection', function (socket) {
     console.log('new connection:', socket.id);
-    players[socket.id] = new TriviaGame();
+    players[socket.id] = new TriviaGame(socket);
 
     socket.on('disconnect', function () {
         console.log('A player has disconnected! ID:', socket.id);
+        delete players[socket.id]
     });
 });
