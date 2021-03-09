@@ -30,7 +30,8 @@ export default class App extends React.Component {
 
         this.state = {
             name: null,
-            art: null
+            art: null,
+            selected: []
         };
     }
 
@@ -45,9 +46,34 @@ export default class App extends React.Component {
         });
     }
 
+    handleTypeClick(type) {
+        console.log('Clicked on:', type);
+    }
+
     render() {
         var image = this.state.art === null ? <Loader active inline="centered" size="massive" /> : <img src={this.state.art} alt="Pokémon" height="100%" />
         var subtitle = this.state.name === null ? <span style={{ color: "transparent", textShadow: "0 0 10px rgba(0,0,0,0.5)" }}>pokémon</span> : this.state.name;
+
+        var typeIcons = [
+            bugIcon, darkIcon, dragonIcon, electricIcon,
+            fariyIcon, fightingIcon, fireIcon, flyingIcon,
+            ghostIcon, grassIcon, groundIcon, iceIcon,
+            normalIcon, poisonIcon, psychicIcon, rockIcon,
+            steelIcon, waterIcon
+        ];
+
+        var types = [
+            'bug', 'dark', 'dragon', 'electric',
+            'fairy', 'fighting', 'fire', 'flying',
+            'ghost', 'grass', 'ground', 'ice',
+            'normal', 'poison', 'psychic', 'rock',
+            'steel', 'water'
+        ].map((type, index) => (
+            <div className={"pokemonIcon " + type} key={index} onClick={() => { this.handleTypeClick(type) }}>
+                <img src={typeIcons[index]} alt={type} />
+                <div style={{ textTransform: "capitalize" }}>{type}</div>
+            </div>
+        ));
 
         return (
             <>
@@ -67,78 +93,7 @@ export default class App extends React.Component {
                     </div>
                     <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
                     <div className="wrapper">
-                        <div className="pokemonIcon bug">
-                            <img src={bugIcon} alt="bug" />
-                            <div>Bug</div>
-                        </div>
-                        <div className="pokemonIcon dark">
-                            <img src={darkIcon} alt="dark" />
-                            <div>Dark</div>
-                        </div>
-                        <div className="pokemonIcon dragon">
-                            <img src={dragonIcon} alt="dragon" />
-                            <div>Dragon</div>
-                        </div>
-                        <div className="pokemonIcon electric">
-                            <img src={electricIcon} alt="electric" />
-                            <div>Electric</div>
-                        </div>
-                        <div className="pokemonIcon fairy">
-                            <img src={fariyIcon} alt="fairy" />
-                            <div>Fairy</div>
-                        </div>
-                        <div className="pokemonIcon fighting">
-                            <img src={fightingIcon} alt="fighting" />
-                            <div>Fighting</div>
-                        </div>
-                        <div className="pokemonIcon fire">
-                            <img src={fireIcon} alt="fire" />
-                            <div>Fire</div>
-                        </div>
-                        <div className="pokemonIcon flying">
-                            <img src={flyingIcon} alt="flying" />
-                            <div>Flying</div>
-                        </div>
-                        <div className="pokemonIcon ghost">
-                            <img src={ghostIcon} alt="ghost" />
-                            <div>Ghost</div>
-                        </div>
-                        <div className="pokemonIcon grass">
-                            <img src={grassIcon} alt="grass" />
-                            <div>Grass</div>
-                        </div>
-                        <div className="pokemonIcon ground">
-                            <img src={groundIcon} alt="ground" />
-                            <div>Ground</div>
-                        </div>
-                        <div className="pokemonIcon ice">
-                            <img src={iceIcon} alt="ice" />
-                            <div>Ice</div>
-                        </div>
-                        <div className="pokemonIcon normal">
-                            <img src={normalIcon} alt="normal" />
-                            <div>Normal</div>
-                        </div>
-                        <div className="pokemonIcon poison">
-                            <img src={poisonIcon} alt="poison" />
-                            <div>Poison</div>
-                        </div>
-                        <div className="pokemonIcon psychic">
-                            <img src={psychicIcon} alt="psychic" />
-                            <div>Psychic</div>
-                        </div>
-                        <div className="pokemonIcon rock">
-                            <img src={rockIcon} alt="rock" />
-                            <div>Rock</div>
-                        </div>
-                        <div className="pokemonIcon steel">
-                            <img src={steelIcon} alt="steel" />
-                            <div>Steel</div>
-                        </div>
-                        <div className="pokemonIcon water">
-                            <img src={waterIcon} alt="water" />
-                            <div>Water</div>
-                        </div>
+                        {types}
                     </div>
                 </div>
             </>
