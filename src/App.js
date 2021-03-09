@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import io from 'socket.io-client';
 import { Menu, Loader } from 'semantic-ui-react';
 import pokeballImage from './images/pokeball.svg';
@@ -24,23 +23,31 @@ import steelIcon from './images/pokemonTypes/steel.svg';
 import waterIcon from './images/pokemonTypes/water.svg';
 
 export default class App extends React.Component {
+    static SOCKET = process.env.NODE_ENV === 'production' ? io() : io('http://localhost:5000');
+
     constructor(props) {
         super(props);
 
-        this.state = { image: null };
+        this.state = {
+            name: null,
+            art: null
+        };
     }
 
     componentDidMount() {
-        const socket = process.env.NODE_ENV === 'production' ? io() : io('http://localhost:5000');
+        App.SOCKET.on('question', (data) => {
+            console.log(data);
 
-        socket.on('temp', (response) => {
-            console.log(response);
-            this.setState({ image: response.sprites.other['official-artwork'].front_default });
+            this.setState({
+                name: data.name,
+                art: data.art
+            });
         });
     }
 
     render() {
-        var image = this.state.image === null ? <Loader active inline="centered" size="massive" /> : <img src={this.state.image} alt="Pokémon" height="100%" />
+        var image = this.state.art === null ? <Loader active inline="centered" size="massive" /> : <img src={this.state.art} alt="Pokémon" height="100%" />
+        var subtitle = this.state.name === null ? <span style={{ color: "transparent", textShadow: "0 0 10px rgba(0,0,0,0.5)" }}>pokémon</span> : this.state.name;
 
         return (
             <>
@@ -55,10 +62,10 @@ export default class App extends React.Component {
                 </Menu>
 
                 <div style={{ marginTop: "15px" }}>
-                    <div style={{ height: "20rem", display: "flex", justifyContent: "center" }}>
+                    <div style={{ height: "20rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
                         {image}
                     </div>
-                    <div style={{ textAlign: "center" }}>This should be in the centered</div>
+                    <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
                     <div className="wrapper">
                         <div className="pokemonIcon bug">
                             <img src={bugIcon} alt="bug" />
