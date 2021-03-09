@@ -61,58 +61,76 @@ export default class App extends React.Component {
                     <div style={{ textAlign: "center" }}>This should be in the centered</div>
                     <div className="wrapper">
                         <div className="pokemonIcon bug">
-                            <img src={bugIcon} />
+                            <img src={bugIcon} alt="bug" />
+                            <div>Bug</div>
                         </div>
                         <div className="pokemonIcon dark">
-                            <img src={darkIcon} />
+                            <img src={darkIcon} alt="dark" />
+                            <div>Dark</div>
                         </div>
                         <div className="pokemonIcon dragon">
-                            <img src={dragonIcon} />
+                            <img src={dragonIcon} alt="dragon" />
+                            <div>Dragon</div>
                         </div>
                         <div className="pokemonIcon electric">
-                            <img src={electricIcon} />
+                            <img src={electricIcon} alt="electric" />
+                            <div>Electric</div>
                         </div>
                         <div className="pokemonIcon fairy">
-                            <img src={fariyIcon} />
+                            <img src={fariyIcon} alt="fairy" />
+                            <div>Fairy</div>
                         </div>
                         <div className="pokemonIcon fighting">
-                            <img src={fightingIcon} />
+                            <img src={fightingIcon} alt="fighting" />
+                            <div>Fighting</div>
                         </div>
                         <div className="pokemonIcon fire">
-                            <img src={fireIcon} />
+                            <img src={fireIcon} alt="fire" />
+                            <div>Fire</div>
                         </div>
                         <div className="pokemonIcon flying">
-                            <img src={flyingIcon} />
+                            <img src={flyingIcon} alt="flying" />
+                            <div>Flying</div>
                         </div>
                         <div className="pokemonIcon ghost">
-                            <img src={ghostIcon} />
+                            <img src={ghostIcon} alt="ghost" />
+                            <div>Ghost</div>
                         </div>
                         <div className="pokemonIcon grass">
-                            <img src={grassIcon} />
+                            <img src={grassIcon} alt="grass" />
+                            <div>Grass</div>
                         </div>
                         <div className="pokemonIcon ground">
-                            <img src={groundIcon} />
+                            <img src={groundIcon} alt="ground" />
+                            <div>Ground</div>
                         </div>
                         <div className="pokemonIcon ice">
-                            <img src={iceIcon} />
+                            <img src={iceIcon} alt="ice" />
+                            <div>Ice</div>
                         </div>
                         <div className="pokemonIcon normal">
-                            <img src={normalIcon} />
+                            <img src={normalIcon} alt="normal" />
+                            <div>Normal</div>
                         </div>
                         <div className="pokemonIcon poison">
-                            <img src={poisonIcon} />
+                            <img src={poisonIcon} alt="poison" />
+                            <div>Poison</div>
                         </div>
                         <div className="pokemonIcon psychic">
-                            <img src={psychicIcon} />
+                            <img src={psychicIcon} alt="psychic" />
+                            <div>Psychic</div>
                         </div>
                         <div className="pokemonIcon rock">
-                            <img src={rockIcon} />
+                            <img src={rockIcon} alt="rock" />
+                            <div>Rock</div>
                         </div>
                         <div className="pokemonIcon steel">
-                            <img src={steelIcon} />
+                            <img src={steelIcon} alt="steel" />
+                            <div>Steel</div>
                         </div>
                         <div className="pokemonIcon water">
-                            <img src={waterIcon} />
+                            <img src={waterIcon} alt="water" />
+                            <div>Water</div>
                         </div>
                     </div>
                 </div>

@@ -1,20 +1,23 @@
 .wrapper {
-    max-width: 20rem;
-    margin: auto auto;
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(3, 1fr);
-    align-content: center;
-    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    max-width: 50rem;
+    margin: auto auto;
 }
 
 .pokemonIcon {
     border-radius: 100%;
-    height: 50px;
-    width: 50px;
-    margin: auto;
+    height: 4rem;
+    width: 6.5rem;
+    margin: 0.3rem;
     transition: 200ms all;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
 }
 
 .pokemonIcon:hover{
@@ -25,8 +28,7 @@
 
 .pokemonIcon img {
     height: 60%;
-    width: 60%;
-    margin: 20%;
+    width: 45%;
 }
 
 .bug {
