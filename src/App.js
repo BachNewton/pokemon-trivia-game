@@ -29,11 +29,15 @@ export default class App extends React.Component {
         super(props);
 
         this.handleTypeClick = this.handleTypeClick.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleNextQuestion = this.handleNextQuestion.bind(this);
 
         this.state = {
             name: null,
             art: null,
-            selected: []
+            selected: [],
+            answer: [],
+            answerSent: false
         };
     }
 
@@ -46,12 +50,20 @@ export default class App extends React.Component {
                 art: data.art
             });
         });
+
+        App.SOCKET.on('correct', () => {
+            this.setState({ answer: this.state.selected.slice(0) });
+        });
+
+        App.SOCKET.on('incorrect', (answer) => {
+            this.setState({ answer: answer });
+        });
     }
 
     handleTypeClick(type) {
         console.log('Clicked on:', type);
-
         var selected = this.state.selected;
+
         var index = selected.indexOf(type);
         if (index === -1) {
             selected.push(type);
@@ -63,6 +75,15 @@ export default class App extends React.Component {
         }
 
         this.setState({ selected: selected });
+    }
+
+    handleSubmit() {
+        this.setState({ answerSent: true });
+        App.SOCKET.emit('answer', this.state.selected);
+    }
+
+    handleNextQuestion() {
+        console.log('Next question');
     }
 
     renderTopMenu() {
@@ -99,7 +120,11 @@ export default class App extends React.Component {
             'steel', 'water'
         ].map((type, index) => {
             var className = "pokemonIcon " + type;
-            className += this.state.selected.includes(type) ? " selected" : this.state.selected.length >= 2 ? " unselected" : "";
+            if (this.state.answer.length > 0) {
+                className += this.state.answer.includes(type) ? " correct" : this.state.selected.includes(type) ? " incorrect" : " unselected";
+            } else {
+                className += this.state.selected.includes(type) ? " selected" : this.state.selected.length >= 2 ? " unselected" : "";
+            }
 
             return (
                 <div className={className} key={index} onClick={() => { this.handleTypeClick(type) }}>
@@ -108,6 +133,26 @@ export default class App extends React.Component {
                 </div>
             );
         });
+
+        var button = this.state.answer.length > 0 ? (
+            <Button
+                loading={false}
+                disabled={false}
+                secondary style={{ width: "20rem", fontSize: "1.25rem" }}
+                onClick={this.handleNextQuestion}
+            >
+                Next Question
+            </Button>
+        ) : (
+            <Button
+                loading={this.state.answerSent}
+                disabled={this.state.selected.length === 0 || this.state.answerSent}
+                primary style={{ width: "20rem", fontSize: "1.25rem" }}
+                onClick={this.handleSubmit}
+            >
+                Submit
+            </Button>
+        );
 
         return (
             <>
@@ -120,7 +165,7 @@ export default class App extends React.Component {
 
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
-                    <Button disabled={this.state.selected.length === 0} primary style={{ width: "20rem" }}>Submit</Button>
+                    {button}
                 </div>
             </>
         );

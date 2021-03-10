@@ -18,6 +18,19 @@
     color: white;
     font-weight: bold;
     font-size: 0.8rem;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.correct {
+    border: 4px solid green;
+    transform: scale(1.1);
+    filter: saturate(200%);
+}
+
+.incorrect {
+    border: 4px solid red;
+    transform: scale(1.1);
+    filter: saturate(200%);
 }
 
 .selected {
