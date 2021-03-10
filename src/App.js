@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import { Menu, Loader } from 'semantic-ui-react';
+import { Menu, Loader, Button } from 'semantic-ui-react';
 import pokeballImage from './images/pokeball.svg';
 import './pokemonTypes.css';
 import bugIcon from './images/pokemonTypes/bug.svg';
@@ -28,6 +28,8 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
 
+        this.handleTypeClick = this.handleTypeClick.bind(this);
+
         this.state = {
             name: null,
             art: null,
@@ -48,9 +50,36 @@ export default class App extends React.Component {
 
     handleTypeClick(type) {
         console.log('Clicked on:', type);
+
+        var selected = this.state.selected;
+        var index = selected.indexOf(type);
+        if (index === -1) {
+            selected.push(type);
+            if (selected.length > 2) {
+                selected.splice(0, 1);
+            }
+        } else {
+            selected.splice(index, 1);
+        }
+
+        this.setState({ selected: selected });
     }
 
-    render() {
+    renderTopMenu() {
+        return (
+            <Menu inverted attached>
+                <Menu.Item>
+                    <img src={pokeballImage} alt="Pokéball" />
+                    <span style={{ marginLeft: "0.4rem" }}>Pokémon Trivia Game</span>
+                </Menu.Item>
+                <Menu.Item>
+                    Leaderboards
+                    </Menu.Item>
+            </Menu>
+        );
+    }
+
+    renderBody() {
         var image = this.state.art === null ? <Loader active inline="centered" size="massive" /> : <img src={this.state.art} alt="Pokémon" height="100%" />
         var subtitle = this.state.name === null ? <span style={{ color: "transparent", textShadow: "0 0 10px rgba(0,0,0,0.5)" }}>pokémon</span> : this.state.name;
 
@@ -68,33 +97,41 @@ export default class App extends React.Component {
             'ghost', 'grass', 'ground', 'ice',
             'normal', 'poison', 'psychic', 'rock',
             'steel', 'water'
-        ].map((type, index) => (
-            <div className={"pokemonIcon " + type} key={index} onClick={() => { this.handleTypeClick(type) }}>
-                <img src={typeIcons[index]} alt={type} />
-                <div style={{ textTransform: "capitalize" }}>{type}</div>
-            </div>
-        ));
+        ].map((type, index) => {
+            var className = "pokemonIcon " + type;
+            className += this.state.selected.includes(type) ? " selected" : this.state.selected.length >= 2 ? " unselected" : "";
+
+            return (
+                <div className={className} key={index} onClick={() => { this.handleTypeClick(type) }}>
+                    <img src={typeIcons[index]} alt={type} />
+                    <div style={{ textTransform: "capitalize" }}>{type}</div>
+                </div>
+            );
+        });
 
         return (
             <>
-                <Menu inverted attached>
-                    <Menu.Item>
-                        <img src={pokeballImage} alt="Pokéball" />
-                        <span style={{ marginLeft: "0.25rem" }}>Pokémon Trivia Game</span>
-                    </Menu.Item>
-                    <Menu.Item>
-                        Leaderboards
-                    </Menu.Item>
-                </Menu>
+                <div style={{ height: "20rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    {image}
+                </div>
+                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
+                <div className="wrapper">
+                    {types}
 
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
+                    <Button disabled={this.state.selected.length === 0} primary style={{ width: "20rem" }}>Submit</Button>
+                </div>
+            </>
+        );
+    }
+
+    render() {
+        return (
+            <>
+                {this.renderTopMenu()}
                 <div style={{ marginTop: "15px" }}>
-                    <div style={{ height: "20rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        {image}
-                    </div>
-                    <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
-                    <div className="wrapper">
-                        {types}
-                    </div>
+                    {this.renderBody()}
                 </div>
             </>
         );
