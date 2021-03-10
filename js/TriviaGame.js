@@ -8,14 +8,12 @@ module.exports = class TriviaGame {
         this.score = 0;
         this.answer = [];
         this.socket = socket;
-
-        this.sendQuestion();
     }
 
     sendQuestion() {
         var random = Math.floor(Math.random() * TriviaGame.TOTAL_POKEMON + 1);
         TriviaGame.POKEDEX.getPokemonByName(random).then((response) => {
-            var name = response.name;
+            var name = response.species.name;
             var art = response.sprites.other['official-artwork'].front_default;
             this.answer = response.types.map(type => type.type.name);
             this.socket.emit('question', {

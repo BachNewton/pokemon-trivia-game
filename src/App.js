@@ -58,10 +58,14 @@ export default class App extends React.Component {
         App.SOCKET.on('incorrect', (answer) => {
             this.setState({ answer: answer });
         });
+
+        App.SOCKET.emit('ready');
     }
 
     handleTypeClick(type) {
+        if (this.state.answer.length > 0) return;
         console.log('Clicked on:', type);
+
         var selected = this.state.selected;
 
         var index = selected.indexOf(type);
@@ -83,7 +87,14 @@ export default class App extends React.Component {
     }
 
     handleNextQuestion() {
-        console.log('Next question');
+        this.setState({
+            name: null,
+            art: null,
+            selected: [],
+            answer: [],
+            answerSent: false
+        });
+        App.SOCKET.emit('ready');
     }
 
     renderTopMenu() {
@@ -101,7 +112,12 @@ export default class App extends React.Component {
     }
 
     renderBody() {
-        var image = this.state.art === null ? <Loader active inline="centered" size="massive" /> : <img src={this.state.art} alt="Pokémon" height="100%" />
+        var image = this.state.art === null ? (
+            <Loader active inline="centered" size="massive" />
+        ) : (
+            <img src={this.state.art} alt="Pokémon" height="100%" />
+        );
+
         var subtitle = this.state.name === null ? <span style={{ color: "transparent", textShadow: "0 0 10px rgba(0,0,0,0.5)" }}>pokémon</span> : this.state.name;
 
         var typeIcons = [
@@ -159,7 +175,7 @@ export default class App extends React.Component {
                 <div style={{ height: "20rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {image}
                 </div>
-                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
+                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", margin: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
                 <div className="wrapper">
                     {types}
 

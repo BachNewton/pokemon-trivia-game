@@ -41,4 +41,8 @@ io.on('connection', function (socket) {
     socket.on('answer', function (guess) {
         players[socket.id].checkAnswer(guess);
     });
+
+    socket.on('ready', function () {
+        players[socket.id].sendQuestion();
+    });
 });
