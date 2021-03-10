@@ -3,11 +3,13 @@ const Pokedex = require('pokedex-promise-v2');
 module.exports = class TriviaGame {
     static POKEDEX = new Pokedex();
     static TOTAL_POKEMON = 898;
+    static MAX_HP = 6;
 
     constructor(socket) {
-        this.score = 0;
         this.answer = [];
         this.socket = socket;
+        this.hp = TriviaGame.MAX_HP;
+        this.level = 1;
     }
 
     sendQuestion() {
@@ -41,12 +43,12 @@ module.exports = class TriviaGame {
 
     sendIncorrect() {
         console.log(this.socket.id + ' is incorrect!');
+        this.hp--;
         this.socket.emit('incorrect', this.answer);
     }
 
     sendCorrect() {
         console.log(this.socket.id + ' is correct!');
-        this.score++;
         this.socket.emit('correct');
     }
 }

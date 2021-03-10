@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import { Menu, Loader, Button } from 'semantic-ui-react';
+import { Menu, Loader, Button, Progress } from 'semantic-ui-react';
 import pokeballImage from './images/pokeball.svg';
 import './pokemonTypes.css';
 import bugIcon from './images/pokemonTypes/bug.svg';
@@ -24,6 +24,8 @@ import waterIcon from './images/pokemonTypes/water.svg';
 
 export default class App extends React.Component {
     static SOCKET = process.env.NODE_ENV === 'production' ? io() : io('http://localhost:5000');
+    static MAX_HP = 6;
+    static EXP_MULTIPLIER_PER_LEVEL = 2;
 
     constructor(props) {
         super(props);
@@ -37,7 +39,10 @@ export default class App extends React.Component {
             art: null,
             selected: [],
             answer: [],
-            answerSent: false
+            answerSent: false,
+            hp: App.MAX_HP,
+            exp: 0,
+            level: 1
         };
     }
 
@@ -52,11 +57,32 @@ export default class App extends React.Component {
         });
 
         App.SOCKET.on('correct', () => {
-            this.setState({ answer: this.state.selected.slice(0) });
+            var exp = this.state.exp + 1;
+            var level = this.state.level;
+
+            if (exp >= this.state.level * App.EXP_MULTIPLIER_PER_LEVEL) {
+                setTimeout(() => {
+                    level++;
+                    exp = 0;
+                    this.setState({
+                        exp: exp,
+                        level: level
+                    });
+                }, 500);
+            }
+
+            this.setState({
+                answer: this.state.selected.slice(0),
+                exp: exp,
+                level: level
+            });
         });
 
         App.SOCKET.on('incorrect', (answer) => {
-            this.setState({ answer: answer });
+            this.setState({
+                answer: answer,
+                hp: this.state.hp - 1
+            });
         });
 
         App.SOCKET.emit('ready');
@@ -170,15 +196,25 @@ export default class App extends React.Component {
             </Button>
         );
 
+        var hpPercentage = this.state.hp / App.MAX_HP;
+        var hpBarColor = hpPercentage >= 0.5 ? "green" : hpPercentage >= 0.2 ? "yellow" : "red";
+
         return (
             <>
                 <div style={{ height: "20rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {image}
                 </div>
-                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", margin: "1rem", textTransform: "capitalize" }}>{subtitle}</div>
+                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "0.75rem", textTransform: "capitalize" }}>{subtitle}</div>
+                <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", border: "4px solid black", background: "black", margin: "0rem 1rem", borderRadius: "5px" }}>
+                    <div style={{ color: "white", width: "3rem", fontWeight: "bold", fontSize: "1.25rem" }}>HP:</div>
+                    <Progress progress="ratio" color={hpBarColor} value={this.state.hp} total={App.MAX_HP} style={{ flexGrow: 1, margin: "0px" }} />
+                    <div style={{ width: "100%", margin: "0.1rem 0rem" }}></div>
+                    <div style={{ color: "white", width: "3rem", fontWeight: "bold", fontSize: "1.25rem" }}>EXP:</div>
+                    <Progress progress="ratio" color="blue" value={this.state.exp} total={this.state.level * App.EXP_MULTIPLIER_PER_LEVEL} style={{ flexGrow: 1, margin: "0px" }} />
+                    <div style={{ color: "white", fontWeight: "bold", fontSize: "1.25rem", margin: "0rem 0.25rem" }}>Lv. {this.state.level}</div>
+                </div>
                 <div className="wrapper">
                     {types}
-
                 </div>
                 <div style={{ display: "flex", justifyContent: "center", marginTop: "1rem" }}>
                     {button}
