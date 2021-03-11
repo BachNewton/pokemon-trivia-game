@@ -20,6 +20,10 @@ app.get('/', function (_, response) {
     response.sendFile(path.join(__dirname, '/build/index.html'));
 });
 
+app.get('/service-worker.js', function (_, response) {
+    response.sendFile(path.join(__dirname, '/build/service-worker.js'));
+});
+
 // Start the server
 server.listen(PORT, function () {
     console.log('Starting server on port:', PORT);
