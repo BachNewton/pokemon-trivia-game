@@ -33,6 +33,7 @@ export default class App extends React.Component {
         this.handleTypeClick = this.handleTypeClick.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleNextQuestion = this.handleNextQuestion.bind(this);
+        this.handleReset = this.handleReset.bind(this);
 
         this.state = {
             name: null,
@@ -120,7 +121,18 @@ export default class App extends React.Component {
             answer: [],
             answerSent: false
         });
+
         App.SOCKET.emit('ready');
+    }
+
+    handleReset() {
+        this.setState({
+            hp: App.MAX_HP,
+            exp: 0,
+            level: 1
+        });
+
+        this.handleNextQuestion();
     }
 
     renderTopMenu() {
@@ -176,10 +188,15 @@ export default class App extends React.Component {
             );
         });
 
-        var button = this.state.answer.length > 0 ? (
+        var button = this.state.hp === 0 ? (
             <Button
-                loading={false}
-                disabled={false}
+                negative style={{ width: "20rem", fontSize: "1.25rem" }}
+                onClick={this.handleReset}
+            >
+                Fainted
+            </Button>
+        ) : this.state.answer.length > 0 ? (
+            <Button
                 secondary style={{ width: "20rem", fontSize: "1.25rem" }}
                 onClick={this.handleNextQuestion}
             >
