@@ -69,7 +69,7 @@ export default class App extends React.Component {
                         exp: exp,
                         level: level
                     });
-                }, 500);
+                }, 750);
             }
 
             this.setState({
