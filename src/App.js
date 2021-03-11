@@ -34,6 +34,9 @@ export default class App extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleNextQuestion = this.handleNextQuestion.bind(this);
         this.handleReset = this.handleReset.bind(this);
+        this.gotQuestion = this.gotQuestion.bind(this);
+        this.correctAnswer = this.correctAnswer.bind(this);
+        this.incorrectAnswer = this.incorrectAnswer.bind(this);
 
         this.state = {
             name: null,
@@ -48,45 +51,49 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        App.SOCKET.on('question', (data) => {
-            console.log(data);
-
-            this.setState({
-                name: data.name,
-                art: data.art
-            });
-        });
-
-        App.SOCKET.on('correct', () => {
-            var exp = this.state.exp + 1;
-            var level = this.state.level;
-
-            if (exp >= this.state.level * App.EXP_MULTIPLIER_PER_LEVEL) {
-                setTimeout(() => {
-                    level++;
-                    exp = 0;
-                    this.setState({
-                        exp: exp,
-                        level: level
-                    });
-                }, 750);
-            }
-
-            this.setState({
-                answer: this.state.selected.slice(0),
-                exp: exp,
-                level: level
-            });
-        });
-
-        App.SOCKET.on('incorrect', (answer) => {
-            this.setState({
-                answer: answer,
-                hp: this.state.hp - 1
-            });
-        });
+        App.SOCKET.on('question', this.gotQuestion);
+        App.SOCKET.on('correct', this.correctAnswer);
+        App.SOCKET.on('incorrect', this.incorrectAnswer);
 
         App.SOCKET.emit('ready');
+    }
+
+    gotQuestion(data) {
+        console.log(data);
+
+        this.setState({
+            name: data.name,
+            art: data.art
+        });
+    }
+
+    correctAnswer() {
+        var exp = this.state.exp + 1;
+        var level = this.state.level;
+
+        if (exp >= this.state.level * App.EXP_MULTIPLIER_PER_LEVEL) {
+            setTimeout(() => {
+                level++;
+                exp = 0;
+                this.setState({
+                    exp: exp,
+                    level: level
+                });
+            }, 750);
+        }
+
+        this.setState({
+            answer: this.state.selected.slice(0),
+            exp: exp,
+            level: level
+        });
+    }
+
+    incorrectAnswer(answer) {
+        this.setState({
+            answer: answer,
+            hp: this.state.hp - 1
+        });
     }
 
     handleTypeClick(type) {
