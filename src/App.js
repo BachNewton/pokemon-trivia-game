@@ -24,7 +24,7 @@ import waterIcon from './images/pokemonTypes/water.svg';
 
 export default class App extends React.Component {
     static SOCKET = process.env.NODE_ENV === 'production' ? io() : io('http://localhost:5000');
-    static MAX_HP = 6;
+    static STARTING_HP = 6;
     static EXP_MULTIPLIER_PER_LEVEL = 2;
 
     constructor(props) {
@@ -44,7 +44,8 @@ export default class App extends React.Component {
             selected: [],
             answer: [],
             answerSent: false,
-            hp: App.MAX_HP,
+            hp: App.STARTING_HP,
+            maxHp: App.STARTING_HP,
             exp: 0,
             level: 1
         };
@@ -77,7 +78,9 @@ export default class App extends React.Component {
                 exp = 0;
                 this.setState({
                     exp: exp,
-                    level: level
+                    level: level,
+                    hp: this.state.hp + 1,
+                    maxHp: this.state.maxHp + 1
                 });
             }, 750);
         }
@@ -90,9 +93,19 @@ export default class App extends React.Component {
     }
 
     incorrectAnswer(answer) {
+        var hp = this.state.hp;
+
+        if (answer.includes(this.state.selected[0]) || answer.includes(this.state.selected[1])) {
+            hp -= 1;
+        } else {
+            hp -= 2;
+        }
+
+        hp = Math.max(0, hp);
+
         this.setState({
             answer: answer,
-            hp: this.state.hp - 1
+            hp: hp
         });
     }
 
@@ -134,7 +147,8 @@ export default class App extends React.Component {
 
     handleReset() {
         this.setState({
-            hp: App.MAX_HP,
+            hp: App.STARTING_HP,
+            maxHp: App.STARTING_HP,
             exp: 0,
             level: 1
         });
@@ -220,7 +234,7 @@ export default class App extends React.Component {
             </Button>
         );
 
-        var hpPercentage = this.state.hp / App.MAX_HP;
+        var hpPercentage = this.state.hp / App.STARTING_HP;
         var hpBarColor = hpPercentage >= 0.5 ? "green" : hpPercentage >= 0.2 ? "yellow" : "red";
 
         return (
@@ -231,7 +245,7 @@ export default class App extends React.Component {
                 <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "0.75rem", textTransform: "capitalize" }}>{subtitle}</div>
                 <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", border: "4px solid black", background: "black", margin: "0rem 1rem", borderRadius: "5px" }}>
                     <div style={{ color: "white", width: "3rem", fontWeight: "bold", fontSize: "1.25rem" }}>HP:</div>
-                    <Progress progress="ratio" color={hpBarColor} value={this.state.hp} total={App.MAX_HP} style={{ flexGrow: 1, margin: "0px" }} />
+                    <Progress progress="ratio" color={hpBarColor} value={this.state.hp} total={this.state.maxHp} style={{ flexGrow: 1, margin: "0px" }} />
                     <div style={{ width: "100%", margin: "0.1rem 0rem" }}></div>
                     <div style={{ color: "white", width: "3rem", fontWeight: "bold", fontSize: "1.25rem" }}>EXP:</div>
                     <Progress progress="ratio" color="blue" value={this.state.exp} total={this.state.level * App.EXP_MULTIPLIER_PER_LEVEL} style={{ flexGrow: 1, margin: "0px" }} />
