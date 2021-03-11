@@ -24,6 +24,10 @@ app.get('/service-worker.js', function (_, response) {
     response.sendFile(path.join(__dirname, '/build/service-worker.js'));
 });
 
+app.get('/service-worker.js.map', function (_, response) {
+    response.sendFile(path.join(__dirname, '/build/service-worker.js.map'));
+});
+
 // Start the server
 server.listen(PORT, function () {
     console.log('Starting server on port:', PORT);
