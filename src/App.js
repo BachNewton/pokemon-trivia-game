@@ -244,7 +244,7 @@ export default class App extends React.Component {
             </Button>
         );
 
-        var hpPercentage = this.state.hp / App.STARTING_HP;
+        var hpPercentage = this.state.hp / this.state.maxHp;
         var hpBarColor = hpPercentage >= 0.5 ? "green" : hpPercentage >= 0.2 ? "yellow" : "red";
 
         return (
