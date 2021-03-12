@@ -4,6 +4,7 @@ module.exports = class TriviaGame {
     static POKEDEX = new Pokedex();
     static TOTAL_POKEMON = 898;
     static MAX_HP = 6;
+    static SHINY_CHANCE = 0.01;
 
     constructor(socket) {
         this.answer = [];
@@ -17,10 +18,14 @@ module.exports = class TriviaGame {
         TriviaGame.POKEDEX.getPokemonByName(random).then((response) => {
             var name = response.species.name;
             var art = response.sprites.other['official-artwork'].front_default;
+            var isShiny = Math.random() < TriviaGame.SHINY_CHANCE;
+            var sprite = isShiny ? response.sprites.front_shiny : response.sprites.front_default;
             this.answer = response.types.map(type => type.type.name);
             this.socket.emit('question', {
                 name: name,
-                art: art
+                art: art,
+                sprite: sprite,
+                isShiny: isShiny
             });
         });
     }

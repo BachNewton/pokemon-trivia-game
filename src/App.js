@@ -41,6 +41,8 @@ export default class App extends React.Component {
         this.state = {
             name: null,
             art: null,
+            sprite: null,
+            isShiny: false,
             selected: [],
             answer: [],
             answerSent: false,
@@ -64,7 +66,9 @@ export default class App extends React.Component {
 
         this.setState({
             name: data.name,
-            art: data.art
+            art: data.art,
+            sprite: data.sprite,
+            isShiny: data.isShiny
         });
     }
 
@@ -85,10 +89,15 @@ export default class App extends React.Component {
             }, 750);
         }
 
+        var hp = this.state.hp;
+        hp += this.state.isShiny ? 1 : 0;
+        hp = Math.min(this.state.maxHp, hp);
+
         this.setState({
             answer: this.state.selected.slice(0),
             exp: exp,
-            level: level
+            level: level,
+            hp: hp
         });
     }
 
@@ -174,10 +183,11 @@ export default class App extends React.Component {
         var image = this.state.art === null ? (
             <Loader active inline="centered" size="massive" />
         ) : (
-            <img src={this.state.art} alt="Pokémon" height="100%" />
+            <img src={this.state.sprite} alt="Pokémon" height="100%" />
         );
 
-        var subtitle = this.state.name === null ? <span style={{ color: "transparent", textShadow: "0 0 10px rgba(0,0,0,0.5)" }}>pokémon</span> : this.state.name;
+        var subtitle = this.state.name === null ? <span style={{ color: "transparent" }}>pokémon</span> : this.state.name;
+        var textShadowColor = this.state.name === null ? "rgba(0,0,0,0.5)" : this.state.isShiny ? "gold" : "transparent";
 
         var typeIcons = [
             bugIcon, darkIcon, dragonIcon, electricIcon,
@@ -242,7 +252,7 @@ export default class App extends React.Component {
                 <div style={{ height: "20rem", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {image}
                 </div>
-                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "0.75rem", textTransform: "capitalize" }}>{subtitle}</div>
+                <div style={{ textAlign: "center", fontWeight: "bold", fontSize: "2rem", marginBottom: "0.75rem", textTransform: "capitalize", textShadow: "0 0 10px " + textShadowColor }}>{subtitle}</div>
                 <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", border: "4px solid black", background: "black", margin: "0rem 1rem", borderRadius: "5px" }}>
                     <div style={{ color: "white", width: "3rem", fontWeight: "bold", fontSize: "1.25rem" }}>HP:</div>
                     <Progress progress="ratio" color={hpBarColor} value={this.state.hp} total={this.state.maxHp} style={{ flexGrow: 1, margin: "0px" }} />
